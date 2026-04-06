@@ -27,7 +27,7 @@ VERSION = 1.0
 OBJS     = $(SRC:.cpp=.o)
 TESTOBJS = $(TESTSRC:.cpp=.o)
 
-.PHONY: all clean run runtests edit session dist valgrind valgrind-tests
+.PHONY: all clean run runtests edit dist valgrind valgrind-tests
 
 # ==============================
 # Build Targets
@@ -89,10 +89,6 @@ edit:
 	else \
 		vim -p *.cpp *.h; \
 	fi
-
-session:
-	@mkdir -p .vim
-	@vim +'mksession! .vim/session.vim' +qa
 
 # ==============================
 # Cleanup
