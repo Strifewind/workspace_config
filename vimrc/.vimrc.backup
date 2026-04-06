@@ -1,0 +1,35 @@
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set autoindent
+set smartindent
+
+"set number
+"colorscheme zaibatsu
+
+filetype plugin on
+filetype indent on
+syntax on
+
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+
+inoremap jj <Esc>
+
+nnoremap <space> :
+
+" Split navigation with CTRL+j/k/h/l."
+nnoremap <c-j> <c-w>j
+nnoremap <c-k> <c-w>k
+nnoremap <c-h> <c-w>h
+nnoremap <c-l> <c-w>l
+
+" Resize splits with CTRL+Arrow keys."
+noremap <c-up> <c-w>+
+noremap <c-down> <c-w>-
+noremap <c-left> <c-w>>
+noremap <c-right> <c-w><
+

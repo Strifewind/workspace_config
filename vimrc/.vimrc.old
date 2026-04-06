@@ -1,0 +1,240 @@
+
+" Disable compatibility with vi which can cause unexpected issues.
+set nocompatible
+set fileformat=unix
+set encoding=utf-8
+
+" Do not save backup files.
+set nobackup
+set noswapfile
+
+" Show the mode you are on the last line.
+set showmode
+
+" PLUGINS -------------------------------------------------------------- {{{
+" Place your plugins here
+call plug#begin('~/.vim/plugged')
+
+call plug#end()
+
+" }}}
+
+" VISUAL ---------------------------------------------------------------- {{{
+" Enable type file detection. Vim will be able to try to detect the type of file is use.
+filetype on
+" Enable plugins and load plugin for the detected file type.
+filetype plugin on
+" Load an indent file for the detected file type.
+filetype indent on
+" Turn syntax highlighting on.
+syntax on
+
+" Add numbers to the file.
+set number
+" sets the line numbering based off relative position
+set relativenumber
+
+" Highlight cursor line underneath the cursor horizontally.
+set cursorline
+" Highlight cursor line underneath the cursor vertically.
+set cursorcolumn
+
+" Creates a column where errors are marked.
+set signcolumn=yes
+
+" Do not let cursor scroll below or above N number of lines when scrolling.
+set scrolloff=10
+
+" Set shift width to 4 spaces.
+set shiftwidth=4
+" Set tab width to 4 columns.
+set tabstop=4
+" Use space characters instead of tabs.
+set expandtab
+" Preserve the indentation when a new line is broken 
+set autoindent
+set smartindent
+set smarttab
+
+colorscheme zaibatsu 
+
+" Do not wrap lines. Allow long lines to extend as far as the line goes.
+set nowrap
+
+set noerrorbells
+set showcmd
+" }}}
+
+" SEARCH --------------------------------------------------------------- {{{
+" Override the ignorecase option if searching for capital letters.
+" This will allow you to search specifically for capital letters.
+set smartcase
+" While searching through a file incrementally highlight matching characters as you type.
+set incsearch
+" Ignore capital letters during search.
+set ignorecase
+" Show matching words during a search.
+set showmatch
+" Use highlighting when doing a search.
+set hlsearch
+
+" Set the commands to save in history default number is 20.
+set history=1000
+
+" Show partial command you type in the last line of the screen.
+set showcmd
+
+" Enable auto completion menu after pressing TAB.
+set wildmenu
+" Make wildmenu behave like similar to Bash completion.
+set wildmode=list:longest
+" There are certain files that we would never want to edit with Vim.
+" Wildmenu will ignore files with these extensions.
+set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
+" }}}
+
+" MAPPINGS ------------------------------------------------------------- {{{
+" Set the backslash as the leader key.
+let mapleader = "\\"
+
+" Press \\\ to jump back to the last cursor position.
+nnoremap <leader>\ ``
+
+" Press \p to print the current file to the default printer from a Linux operating system.
+" View available printers:   lpstat -v
+" Set default printer:       lpoptions -d <printer_name>
+" <silent> means do not display output.
+nnoremap <silent> <leader>p :%w !lp<CR>
+
+" Type jj to exit insert mode quickly.
+inoremap jj <Esc>
+
+" Press the space bar to type the : character in command mode.
+nnoremap <space> :
+
+" Center the cursor vertically when moving to the next word during a search.
+nnoremap n nzz
+nnoremap N Nzz
+
+" Yank from cursor to the end of line.
+nnoremap Y y$
+
+" Map the F5 key to run a Python script inside Vim.
+" :w saves the file. !clear clears, then !python3 % runs current file.
+nnoremap <f5> :w<CR>:!clear<CR>:!python3 %<CR>
+
+" Split navigation with CTRL+j/k/h/l.
+nnoremap <c-j> <c-w>j
+nnoremap <c-k> <c-w>k
+nnoremap <c-h> <c-w>h
+nnoremap <c-l> <c-w>l
+
+" Resize splits with CTRL+Arrow keys.
+" (Swap <c-left>/<c-right> if you prefer the opposite.)
+noremap <c-up>    <c-w>+
+noremap <c-down>  <c-w>-
+noremap <c-left>  <c-w>>
+noremap <c-right> <c-w><
+" }}}
+
+" VIMSCRIPT ------------------------------------------------------------ {{{
+" Enable the marker method of folding for Vimscript files.
+augroup filetype_vim
+    autocmd!
+    autocmd FileType vim setlocal foldmethod=marker
+augroup END
+
+" If Vim version is equal to or greater than 7.3 enable undofile.
+" This allows you to undo changes to a file even after saving it.
+if version >= 703
+    set undodir=~/.vim/backup
+    set undofile
+    set undoreload=10000
+endif
+
+" Display cursorline and cursorcolumn ONLY in active window.
+augroup cursor_off
+    autocmd!
+    autocmd WinLeave * setlocal nocursorline nocursorcolumn
+    autocmd WinEnter * setlocal cursorline cursorcolumn
+augroup END
+" }}}
+
+" STATUS LINE ---------------------------------------------------------- {{{
+" Always show the statusline (vim)
+set laststatus=2
+
+" Truecolor (if your terminal supports it) for GUI Hex colors in :highlight
+if has('termguicolors')
+    set termguicolors
+endif
+
+let g:mode_colors = {
+      \ 'n':  'StatusLineSection',
+      \ 'v':  'StatusLineSectionV',
+      \ 'V':  'StatusLineSectionV',
+      \ "\x16":'StatusLineSectionV',
+      \ 'i':  'StatusLineSectionI',
+      \ 'c':  'StatusLineSectionC',
+      \ 'R':  'StatusLineSectionR',
+      \ }
+
+
+function! StatusLineRenderer()
+    let m = mode()
+    let grp = get(g:mode_colors, m, g:mode_colors.n)
+    let hl = '%#' . grp . '#'
+
+  return hl
+        \ . (&modified ? ' + │' : '')
+        \ . ' %{StatusLineFilename()} %#StatusLine#%='
+        \ . hl
+        \ . ' %l:%c '
+endfunction
+
+
+function! StatusLineFilename()
+    if &ft ==# 'netrw' | return '*' | endif
+    " Handle [No Name] buffers gracefully
+    let f = expand('%')
+    if empty(f) | return '[No Name]' | endif
+    return substitute(f, '^' . escape(getcwd(), '\'), '', '')
+endfunction
+
+
+function! <SID>StatusLineHighlights()
+  highlight StatusLine         ctermbg=8  guibg=#313131 ctermfg=15 guifg=#cccccc
+  highlight StatusLineNC       ctermbg=0  guibg=#313131 ctermfg=8  guifg=#999999
+  highlight StatusLineSection  ctermbg=8  guibg=#55b5db ctermfg=0  guifg=#333333
+  highlight StatusLineSectionV ctermbg=11 guibg=#a074c4 ctermfg=0  guifg=#000000
+  highlight StatusLineSectionI ctermbg=10 guibg=#9fca56 ctermfg=0  guifg=#000000
+  highlight StatusLineSectionC ctermbg=12 guibg=#db7b55 ctermfg=0  guifg=#000000
+  highlight StatusLineSectionR ctermbg=12 guibg=#ed3f45 ctermfg=0  guifg=#000000
+endfun
+
+
+call <SID>StatusLineHighlights()
+
+" only set default statusline once on initial startup.
+" ignored on subsequent 'so $MYVIMRC' calls to prevent
+" active buffer statusline from being 'blurred'.
+if has('vim_starting')
+  let &statusline = ' %{StatusLineFilename()}%= %l:%c '
+endif
+
+
+augroup vimrc
+  autocmd!
+  " show focussed buffer statusline
+  autocmd FocusGained,VimEnter,WinEnter,BufWinEnter *
+    \ setlocal statusline=%!StatusLineRenderer()
+
+  " show blurred buffer statusline
+  autocmd FocusLost,VimLeave,WinLeave,BufWinLeave *
+    \ setlocal statusline&
+
+  " restore statusline highlights on colorscheme update
+  autocmd Colorscheme * call <SID>StatusLineHighlights()
+augroup END
+
+" }}}
