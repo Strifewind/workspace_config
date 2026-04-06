@@ -7,13 +7,21 @@ Each type of configuration lives in its own directory to keep things organized a
 
 ## Contents
 bash/
+
 └── .bashrc
+
 vim/
+
 └── .vimrc
+
 make/
+
 └── Makefile
+
 git/
+
 └── .gitignore
+
 
 ### bash/
 Sample `.bashrc` with aliases, environment settings, and shell quality-of-life improvements.
