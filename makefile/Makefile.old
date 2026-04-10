@@ -29,10 +29,22 @@ DISTFILES := Makefile \
 # Derived Values (NO EDITING NEEDED)
 # ==============================
 
-OBJS     = $(SRC:.cpp=.o)
-TESTOBJS = $(TESTSRC:.cpp=.o)
+OBJS     		= $(SRC:.cpp=.o)
+TESTOBJS 		= $(TESTSRC:.cpp=.o)
 
-.PHONY: all clean run runtests edit dist valgrind valgrind-tests
+# Header files (exclude main.h by default)
+HDRS	 	 		= $(filter-out main.h, $(SRC:.cpp=.h))
+
+# All expected source files
+ALLSRC	 		= $(SRC) $(TESTSRC)
+
+# Vim & Git setup
+VIM_DIR	 		= .vim
+VIM_SESSION	= $(VIM_DIR)/session.vim
+GITIGNORE		= .gitignore
+
+
+.PHONY: all clean run runtests edit dist valgrind valgrind-tests setup SETUP
 
 # ==============================
 # Build Targets
@@ -49,6 +61,59 @@ $(TESTAPP): $(TESTOBJS)
 # Compile source files into object files
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $<
+
+#===============================
+# Setup Target
+#===============================
+SETUP: setup
+setup: $(ALLSRC) $(HDRS) $(VIM_SESSION) $(GITIGNORE)
+	@echo -e " \u2714 Project setup completed!"
+
+#-------------------------------
+# Auto-create missing .cpp files
+#-------------------------------
+%.cpp:
+	@echo "Creating source $@"
+	@printf "%s\n" \
+		"#include \"$(basename $@).h\"" \
+		""\
+		> $@
+
+
+#-------------------------------
+# Auto-create matching .h files
+#-------------------------------
+%.h:
+	@echo "Creating head $@"
+	@printf "%s\n" \
+		"#pragma once" \
+		"" \
+		"// Declarations for $(basename $@)" \
+		> $@
+
+
+#-------------------------------
+# Vim session file
+#-------------------------------
+$(VIM_SESSION):
+	@echo "Creating $(VIM_SESSION)"
+	@mkdir -p $(VIM_DIR)
+
+
+#-------------------------------
+# .gitignore
+#-------------------------------
+$(GITIGNORE):
+	@echo "Creating .gitignore"
+	@printf "%s/n" \
+		"*.o" \
+		"*.out" \
+		"$(APP)" \
+		"$(TESTAPP)" \
+		"*.tar.gz" \
+		"$(VIM_DIR)/" \
+		> $@
+
 
 # ==============================
 # Run Targets
