@@ -98,6 +98,7 @@ setup: $(ALLSRC) $(HDRS) $(VIM_SESSION) $(GITIGNORE)
 $(VIM_SESSION):
 	@echo "Creating $(VIM_SESSION)"
 	@mkdir -p $(VIM_DIR)
+	$@
 
 
 #-------------------------------
