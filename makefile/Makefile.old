@@ -86,11 +86,12 @@ setup: $(ALLSRC) $(HDRS) $(VIM_SESSION) $(GITIGNORE)
 %.h:
 	@echo "Creating head $@"
 	@printf "%s\n" \
-		"#pragma once" \
+		"#ifndef '$(basename $@)'" \
+		"#define '$(basename $@)'" \
 		"" \
 		"// Declarations for $(basename $@)" \
-		> $@
-
+    "#endif" \
+    > $@
 
 #-------------------------------
 # Vim session file
