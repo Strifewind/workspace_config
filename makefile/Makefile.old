@@ -86,8 +86,16 @@ setup: $(ALLSRC) $(HDRS) $(VIM_SESSION) $(GITIGNORE)
 %.h:
 	@echo "Creating head $@"
 	@printf "%s\n" \
-		"#ifndef '$(basename $@)'" \
-		"#define '$(basename $@)'" \
+		"#ifndef '$(basename $@)_H'" \
+		"#define '$(basename $@)_H'" \
+		"" \
+		"" \
+		"class $(basename $@) {" \
+		"Public: " \
+		"" \
+		"Private: " \
+		"" \
+		"};" \
 		"" \
 		"// Declarations for $(basename $@)" \
     "#endif" \
