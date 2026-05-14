@@ -86,8 +86,8 @@ setup: $(ALLSRC) $(HDRS) $(VIM_SESSION) $(GITIGNORE)
 %.h:
 	@echo "Creating head $@"
 	@printf "%s\n" \
-		"#ifndef '$(basename $@)_H'" \
-		"#define '$(basename $@)_H'" \
+		"#ifndef $(shell echo $(basename $@) | tr a-z A-Z)_H" \
+		"#define $(shell echo $(basename $@) | tr a-z A-Z)_H" \
 		"" \
 		"" \
 		"class $(basename $@) {" \
@@ -98,8 +98,8 @@ setup: $(ALLSRC) $(HDRS) $(VIM_SESSION) $(GITIGNORE)
 		"};" \
 		"" \
 		"// Declarations for $(basename $@)" \
-    "#endif" \
-    > $@
+		"#endif" \
+		> $@
 
 #-------------------------------
 # Vim session file
@@ -115,7 +115,7 @@ $(VIM_SESSION):
 #-------------------------------
 $(GITIGNORE):
 	@echo "Creating .gitignore"
-	@printf "%s/n" \
+	@printf "%s\n" \
 		"*.o" \
 		"*.out" \
 		"$(APP)" \
