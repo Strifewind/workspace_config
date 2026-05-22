@@ -13,8 +13,11 @@ APP     = app
 TESTAPP = tests
 
 # Source files (ADD .cpp FILES HERE)
-SRC     = main.cpp
-TESTSRC = tests.cpp
+SHARED  = # EDIT THIS
+
+# Source files
+SRC     = main.cpp $(SHARED)
+TESTSRC = tests.cpp $(SHARED)
 
 # Project info (for tarball submission)
 PROJECT = project-name
